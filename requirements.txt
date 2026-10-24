@@ -1,0 +1,10 @@
+# Mortality Table Smoother - runtime dependencies.
+# The lower bounds are the versions the test suite was run with; older ones were not tried.
+# Pillow is not listed: matplotlib brings it, and openpyxl needs it to embed the chart in the Excel export.
+numpy>=2.4
+scipy>=1.16
+pandas>=2.3
+openpyxl>=3.1
+streamlit>=1.61
+matplotlib>=3.10
+plotly>=6.5
