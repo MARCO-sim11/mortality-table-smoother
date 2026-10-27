@@ -191,6 +191,10 @@ CSS = f"""
 header[data-testid="stHeader"] {{ background: transparent; }}
 [data-testid="stMainBlockContainer"] {{ padding-top: 1.4rem; padding-bottom: 3rem; max-width: 1320px; }}
 h1, h2, h3 {{ color: {NAVY}; }}
+[data-testid="stTabs"] h1 {{ font-size: 2.1rem; }}
+[data-testid="stTabs"] h2 {{ font-size: 1.55rem; margin-top: 1.4rem; }}
+[data-testid="stTabs"] h3 {{ font-size: 1.2rem; }}
+[data-testid="stTabs"] blockquote {{ border-left: 4px solid {SKY}; background: #EAF3FA; border-radius: 0 8px 8px 0; padding: .6rem 1rem; }}
 [data-testid="stSidebar"] {{ background: {NAVY_DEEP}; }}
 [data-testid="stSidebar"] * {{ color: #E6F1FB; }}
 [data-testid="stSidebar"] hr {{ border-color: {BLUE_RULE}; }}
@@ -236,9 +240,11 @@ def inject_css() -> None:
 # --------------------------------------------------------------------------
 
 
-def page_header(title: str, step: int, subtitle: str = "", omegas: tuple = (20, 85, 110)) -> None:
-    """The navy band that opens a page: 'ETAPE n SUR 4', the title, a sentence, and the zone curve on the right."""
-    st.html(f'<div class="rdl-header"><div><p class="rdl-step">Étape {step} sur 4</p><h1>{title}</h1>'
+def page_header(title: str, step: int | None, subtitle: str = "", omegas: tuple = (20, 85, 110)) -> None:
+    """The navy band that opens a page: 'ETAPE n SUR 4' (or 'REFERENCE' for a page that is not a step), the title, a sentence,
+    and the zone curve on the right."""
+    kicker = f"Étape {step} sur 4" if step else "Référence"
+    st.html(f'<div class="rdl-header"><div><p class="rdl-step">{kicker}</p><h1>{title}</h1>'
             f'{f"<p>{subtitle}</p>" if subtitle else ""}</div>'
             f'<div class="rdl-art">{zone_curve_img(*omegas, width=340, height=96, stroke=2.4, labels=False, dots=1.4)}</div></div>')
 
@@ -274,15 +280,18 @@ def view_phrase(view: str) -> str:
     return VIEW_LABEL[view].split(" (")[0].lower()
 
 
-def render_sidebar(pages: list, home, show_choice: bool = True) -> None:
+def render_sidebar(pages: list, home, show_choice: bool = True, reference=None) -> None:
     """The marine sidebar, on every page including the home page: brand, the table type chosen at the home page (when there is one
     to show), the four pages, the way back home.
 
-    `pages` is [(st.Page, label, done)]; `done` pages get a tick."""
+    `pages` is [(st.Page, label, done)]; `done` pages get a tick. `reference` is a page that is not a step (the methodology), linked
+    under the steps."""
     with st.sidebar:
         chip = f'<div class="rdl-chip">{view_phrase(st.session_state.view_choice).capitalize()}</div>' if show_choice else ""
         st.html(f'<div class="rdl-brand">{logo_mark(40)}<div>{wordmark(True)}<small>{APP_NAME}</small></div></div>{chip}')
         for page, label, done in pages:
             st.page_link(page, label=f"{label} ✓" if done else label)
         st.divider()
+        if reference is not None:
+            st.page_link(reference, label="Méthodologie", icon=":material/menu_book:")
         st.page_link(home, label="Accueil", icon=":material/home:")

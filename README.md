@@ -58,7 +58,7 @@ Le dossier `sample_data/` contient aussi des fichiers synthétiques, un par disp
 
 ---
 
-## Interface : un accueil et quatre pages
+## Interface : un accueil, quatre pages et une page de méthodologie
 
 L'**accueil** demande quelles tables lisser : **du moment** (une année civile) ou **générationnelles** (une génération), cette seconde
 voie étant une extension qui réutilise la même chaîne de lissage. Le choix ouvre la page Chargement et reste rappelé en haut de la barre latérale ; un autre choix
@@ -72,6 +72,9 @@ déjà faites, et un lien vers l'accueil. Chaque page se souvient de ses choix (
 | 3 | **Évaluation** | Tableau triable de tous les critères, résidus de déviance et taux bruts contre lissés (deux graphiques pleine largeur, légende à droite), menu « Méthode finale » par zone, bouton « Valider la sélection ». La case « Lier » reporte sur l'autre sexe la méthode choisie dans chaque zone. |
 | 4 | **Export** | Courbe finale colorée par zone, aperçu de la table (50 premières et 50 dernières lignes), trois téléchargements. Les options d'export (colonnes, séparateur, marque décimale, multi-méthodes) sont propres à chaque sexe, ou communes si l'on coche « Lier ». |
 
+Une cinquième page, **Méthodologie**, n'est pas une étape : elle présente chaque méthode (modèle, estimation pas à pas, limites, résultats sur la France 2020)
+et permet d'ajuster n'importe laquelle, à la demande, aux données de `sample_data/` avec le code de l'application. Voir la section suivante.
+
 **Lier les deux sexes.** Une case par page (Paramétrage, Évaluation et Export), indépendantes. Cochée, ce qui est réglé pour le sexe affiché est copié tout de suite sur
 l'autre, puis chaque réglage fait sur l'un est reporté sur l'autre. Pour copier le féminin vers le masculin, cochez la case alors que le féminin est
 affiché. Décochée, les deux sexes redeviennent indépendants et gardent ce qu'ils ont. Si les deux tables n'ont pas les mêmes âges, les frontières copiées
@@ -83,6 +86,23 @@ mortalité en trois zones, les pictogrammes des cartes et des quatre étapes) so
 les graphiques de données gardent leurs couleurs de zones, choisies pour rester distinctes en cas de daltonisme.
 
 ---
+
+## Documentation des méthodes
+
+Les méthodes sont décrites en détail dans [`docs/methodes/`](docs/methodes/README.md) : un fichier Markdown par méthode, plus le cadre général, le raccord, l'évaluation et la table de vie.
+Les formules sont en LaTeX (rendues par GitHub, GitLab et par la page Méthodologie de l'application).
+
+| Fiche | Contenu |
+|---|---|
+| [Cadre général](docs/methodes/00-cadre-general.md) | notations, vraisemblance de Poisson, déviance, Newton-Raphson et Nelder-Mead, modèles emboîtés, `FitResult` |
+| [Polynôme](docs/methodes/01-polynome-degre-3.md), [Spline naturelle](docs/methodes/02-spline-naturelle.md) | zone I : moindres carrés pondérés sur $\ln(D/E)$ |
+| [Gompertz](docs/methodes/03-gompertz.md), [Makeham](docs/methodes/04-makeham.md), [Makeham 2ᵉ ordre](docs/methodes/05-makeham-2e-ordre.md), [Perks](docs/methodes/06-perks.md) | zone II : maximum de vraisemblance de Poisson |
+| [Kannisto](docs/methodes/07-kannisto.md), [Beard](docs/methodes/08-beard.md), [Coale-Kisker](docs/methodes/09-coale-kisker.md) | zone III : les âges extrêmes |
+| [Spline globale](docs/methodes/10-spline-globale.md) | une spline sur tous les âges |
+| [Raccord](docs/methodes/11-raccord.md), [Évaluation](docs/methodes/12-evaluation.md), [Table de vie](docs/methodes/13-table-de-vie.md) | des trois zones à la table finale |
+
+Chaque fiche contient un tableau « Résultats sur la France 2020 » **produit par le code** (`python docs/build_method_results.py`). Les tests échouent quand un tableau, un nom de fonction
+ou un chiffre cité sur l'algorithme ne correspond plus au programme : la documentation ne peut pas dériver en silence.
 
 ## Méthodes par zone
 
@@ -192,9 +212,12 @@ Les téléchargements sont construits au clic : modifier un réglage ailleurs ne
 ```
 mortality-table-smoother/
 ├── app.py                    # Point d'entrée Streamlit : thème, navigation, barre latérale
-├── views/                    # Les pages : accueil, chargement, paramétrage, évaluation, export
+├── views/                    # Les pages : accueil, chargement, paramétrage, évaluation, export, méthodologie
 ├── ui/                       # Briques communes aux pages : constantes, état de session, aides, thème Risk Data Lab
 ├── .streamlit/config.toml    # Thème Risk Data Lab
+├── docs/
+│   ├── methodes/             # Une fiche Markdown par méthode (affichées par la page Méthodologie)
+│   └── build_method_results.py   # Régénère les tableaux de résultats des fiches
 ├── src/
 │   ├── loader/               # Chargement, parsing, contrôles qualité (paquet)
 │   ├── config.py             # SmootherConfig, registre des méthodes, FitResult, zones
@@ -236,7 +259,7 @@ pip install -r requirements-dev.txt
 python -m pytest tests
 ```
 
-Plus de 700 tests : formules comparées à des oracles indépendants (SciPy, énumération exhaustive, boucles naïves), récupération
+Plus de 850 tests : formules comparées à des oracles indépendants (SciPy, énumération exhaustive, boucles naïves), récupération
 exacte de lois connues à partir de comptages sans bruit, propriétés d'optimalité (équations de score, optimum global par évolution
 différentielle), parcours de l'application avec `streamlit.testing`, et chaîne complète sur la France 2020 de la HMD.
 Les tests sur fichiers HMD réels sont ignorés si les fichiers sont absents (dossier indiqué par la variable d'environnement `MORTALITY_POST3_DIR`).

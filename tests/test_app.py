@@ -36,7 +36,7 @@ MODE_A = "A — Taux (ou décès) + exposition, sexes en colonnes"
 MODE_B = "B — Un fichier par sexe"
 PAGES = {"chargement": "views/chargement.py", "parametrage": "views/parametrage.py",
          "evaluation": "views/evaluation.py", "export": "views/export.py"}
-SIDEBAR_LABELS = ["1 · Chargement", "2 · Paramétrage", "3 · Évaluation", "4 · Export", "Accueil"]
+SIDEBAR_LABELS = ["1 · Chargement", "2 · Paramétrage", "3 · Évaluation", "4 · Export", "Méthodologie", "Accueil"]
 BOTH = ("Female", "Male")
 
 
@@ -198,12 +198,12 @@ def test_a_different_choice_on_the_home_page_drops_what_was_loaded_and_the_same_
 def test_the_sidebar_ticks_the_pages_that_are_done(files):
     at = loaded_option_b(files, page="chargement")
     labels = lambda: [p.proto.label for p in at.sidebar.get("page_link")]
-    assert labels() == ["1 · Chargement ✓", "2 · Paramétrage", "3 · Évaluation", "4 · Export", "Accueil"]
+    assert labels() == ["1 · Chargement ✓", "2 · Paramétrage", "3 · Évaluation", "4 · Export", "Méthodologie", "Accueil"]
     launch(at)
     goto(at, "evaluation")
-    assert labels() == ["1 · Chargement ✓", "2 · Paramétrage ✓", "3 · Évaluation", "4 · Export", "Accueil"]
+    assert labels() == ["1 · Chargement ✓", "2 · Paramétrage ✓", "3 · Évaluation", "4 · Export", "Méthodologie", "Accueil"]
     validate(at)
-    assert labels() == ["1 · Chargement ✓", "2 · Paramétrage ✓", "3 · Évaluation ✓", "4 · Export", "Accueil"]
+    assert labels() == ["1 · Chargement ✓", "2 · Paramétrage ✓", "3 · Évaluation ✓", "4 · Export", "Méthodologie", "Accueil"]
 
 
 def test_the_pages_without_their_input_point_back_to_the_previous_page():

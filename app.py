@@ -9,6 +9,7 @@ A home page asks which tables to smooth, then four pages follow; a marine sideba
     parametrage  sliders / checkboxes, 'Lancer'      -> config, zone modules -> config, fit_results, fit_config (spec 2, 3)
     evaluation   table of criteria, menus, 'Valider' -> evaluator, joiner -> selected_z1..3, mu_joint, life_table (spec 5, 4)
     export       chart, preview, downloads           -> exporter     -> Excel, CSV, HMD-style text               (spec 6)
+    methodologie one document per method (docs/methodes/*.md) and a live fit on the France 2020 sample          (reference page)
 
 The pages are the files of `views/`, the pieces they share are in `ui/` (constants, session state, helpers, the Risk Data Lab look).
 The file name of a page is its URL path, which is also how the tests reach it (`AppTest.switch_page("views/chargement.py")`).
@@ -48,8 +49,9 @@ chargement = st.Page("views/chargement.py", title="Chargement", icon=":material/
 parametrage = st.Page("views/parametrage.py", title="Paramétrage", icon=":material/tune:")
 evaluation = st.Page("views/evaluation.py", title="Évaluation", icon=":material/query_stats:")
 export = st.Page("views/export.py", title="Export", icon=":material/download:")
+methodologie = st.Page("views/methodologie.py", title="Méthodologie", icon=":material/menu_book:")
 
-current = st.navigation([home, chargement, parametrage, evaluation, export], position="hidden")
+current = st.navigation([home, chargement, parametrage, evaluation, export, methodologie], position="hidden")
 current.run()
 
 ss = st.session_state                                # the sidebar is drawn after the page, so that its ticks show what the page just did
@@ -58,4 +60,4 @@ theme.render_sidebar([
     (parametrage, "2 · Paramétrage", bool(ss.fit_results)),
     (evaluation, "3 · Évaluation", bool(ss.validated_selection)),
     (export, "4 · Export", False),
-], home, show_choice=current.title != home.title or ss.view_chosen)   # on the home page, a table type only once one was chosen
+], home, show_choice=current.title != home.title or ss.view_chosen, reference=methodologie)   # on the home page, a table type only once one was chosen
