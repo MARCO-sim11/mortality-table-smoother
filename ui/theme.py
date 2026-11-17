@@ -21,6 +21,22 @@ from ui.common import GREEN, GREEN_DEEP, INK_SOFT, LIME, NAVY, NAVY_DEEP, NAVY_N
 ZONE_TONES = (SKY, GREEN, LIME)                     # zone I, II, III on a navy background
 APP_NAME = "Mortality Table Smoother"
 TAGLINE = "Exploring risk through data"
+HMD_CITATION = ("HMD. Human Mortality Database. Max Planck Institute for Demographic Research (Germany), "
+                "University of California, Berkeley (USA), and French Institute for Demographic Studies (France). "
+                "Available at www.mortality.org.")
+HMD_HOWTO = (
+    "1. **Créer un compte** (gratuit) sur [mortality.org](https://www.mortality.org) : « Registration », puis « New User », "
+    "en haut à droite.\n"
+    "2. **Ouvrir la page du pays** dans la liste « Data by country or area » de l'accueil du site (France, population totale : `FRATNP`).\n"
+    "3. Dans « Complete Data Series », **télécharger les fichiers 1x1** (âges simples, années civiles) : `Deaths_1x1.txt` et "
+    "`Exposures_1x1.txt`, ou `Mx_1x1.txt` (taux) avec `Exposures_1x1.txt`. Les fichiers d'un pays existent aussi en une seule "
+    "archive : menu « DATA », « Zipped Data Files ».\n"
+    "4. **Les déposer ici**, avec la disposition A (taux ou décès + exposition). Les fichiers « InputDB » (triangles de Lexis) "
+    "et les tables de vie ne conviennent pas.\n"
+    "5. **Noter la date de téléchargement** et citer la HMD (voir l'accueil), comme le demande son contrat d'utilisation.")
+PRIVACY_NOTICE = ("**Confidentialité.** Les fichiers déposés sont traités en mémoire sur le serveur qui héberge l'application, "
+                  "dont l'auteur ne maîtrise pas la localisation ; l'application ne les écrit pas sur disque. "
+                  "Ne déposez pas de données confidentielles ou personnelles : pour celles-ci, exécutez l'application sur votre propre poste.")
 
 # --------------------------------------------------------------------------
 # Drawings
@@ -264,6 +280,25 @@ def choice_card(kind: str, title: str, text: str, badge: str = "") -> None:
             f'{f"<span class=rdl-badge>{badge}</span>" if badge else ""}</div><p class="rdl-card-text">{text}</p></div>')
 
 
+def data_credit() -> None:
+    """The credit the HMD asks for, shown where the app displays its data: the curve of the home page and the France 2020
+    illustrations of the methodology page (the extract of `sample_data/`, published by the HMD under CC BY 4.0)."""
+    st.caption("**Données.** La courbe de l'accueil et les illustrations de la page Méthodologie reposent sur un extrait de la "
+               "[Human Mortality Database](https://www.mortality.org) (France, 2020, version du 12 août 2026), publié sous licence "
+               f"[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Citation : {HMD_CITATION}")
+
+
+def privacy_notice() -> None:
+    """Where the files are uploaded: what happens to them, and what not to upload."""
+    st.info(PRIVACY_NOTICE, icon=":material/lock:")
+
+
+def hmd_howto() -> None:
+    """How to get one's own files from the HMD, on the loading page (the app offers no data file to download)."""
+    with st.expander("Où trouver des données de la HMD ?", icon=":material/help:"):
+        st.markdown(HMD_HOWTO)
+
+
 def steps_strip() -> None:
     """The four steps of the app, on the home page."""
     tiles = (("load", "Chargement", "Déposez vos fichiers HMD, INSEE, CSV ou Excel et contrôlez-les."),
@@ -282,16 +317,16 @@ def view_phrase(view: str) -> str:
 
 def render_sidebar(pages: list, home, show_choice: bool = True, reference=None) -> None:
     """The marine sidebar, on every page including the home page: brand, the table type chosen at the home page (when there is one
-    to show), the four pages, the way back home.
+    to show), then the links: the home page first, the four pages, and below them the reference page.
 
     `pages` is [(st.Page, label, done)]; `done` pages get a tick. `reference` is a page that is not a step (the methodology), linked
     under the steps."""
     with st.sidebar:
         chip = f'<div class="rdl-chip">{view_phrase(st.session_state.view_choice).capitalize()}</div>' if show_choice else ""
         st.html(f'<div class="rdl-brand">{logo_mark(40)}<div>{wordmark(True)}<small>{APP_NAME}</small></div></div>{chip}')
+        st.page_link(home, label="Accueil", icon=":material/home:")
         for page, label, done in pages:
             st.page_link(page, label=f"{label} ✓" if done else label)
-        st.divider()
         if reference is not None:
+            st.divider()
             st.page_link(reference, label="Méthodologie", icon=":material/menu_book:")
-        st.page_link(home, label="Accueil", icon=":material/home:")

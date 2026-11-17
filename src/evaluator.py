@@ -17,7 +17,7 @@ not significant (p > 0.05).
 What is compared with what. AIC and BIC are only meaningful BETWEEN methods of the same zone (same data rows); the table
 therefore carries `delta_aic`, the gap to the best AIC of the zone. `loglik` is recomputed here with
 `fit_common.poisson_loglik` on the zone's data rows (for the zone-III methods too, which are fitted on rows that stop at
-the table's last age but whose curve runs to omega3), so all nine methods share one scale; `p` is the method's own
+the table's last age but whose curve runs to omega3), so all eight methods share one scale; `p` is the method's own
 `params['n_params']`, because the spline's depends on its knots; `n` is the number of data rows with E > 0 in the zone.
 
 Decisions the specs leave open, made here and flagged to the user:

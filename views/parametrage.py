@@ -154,8 +154,7 @@ else:
         st.dataframe(table[list(FIT_STATUS_COLUMNS)].rename(columns=FIT_STATUS_COLUMNS),
                      hide_index=True)
         if n_ok < len(status):
-            st.caption("« non implémenté » : le module de lissage correspondant n'est pas encore "
-                       "écrit (ordre de construction : specs, section 8).")
+            st.caption("« non implémenté » : le module de lissage correspondant n'est pas disponible.")
 
 with header:
     theme.page_header("Paramétrage et lancement", 2,

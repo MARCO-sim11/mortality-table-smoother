@@ -1,0 +1,32 @@
+# Risk Data Lab theme. Streamlit reads this file from the folder `streamlit run` is started in:
+# run `python -m streamlit run app.py` from the project root.
+
+[theme]
+font = "sans serif"
+baseRadius = "8px"
+
+[theme.light]
+primaryColor = "#1B6CA8"
+backgroundColor = "#F4F7FA"
+secondaryBackgroundColor = "#E9EEF3"
+textColor = "#12283D"
+
+[theme.light.sidebar]
+backgroundColor = "#0E3A63"
+secondaryBackgroundColor = "#134A7C"
+textColor = "#E6F1FB"
+primaryColor = "#3EB553"
+
+[theme.dark]
+primaryColor = "#35A8E0"
+backgroundColor = "#0B2A45"
+secondaryBackgroundColor = "#12283D"
+textColor = "#E6F1FB"
+
+[theme.dark.sidebar]
+backgroundColor = "#071C30"
+textColor = "#E6F1FB"
+
+[browser]
+gatherUsageStats = false
+

@@ -42,14 +42,14 @@ résolu par `numpy.linalg.solve`. La courbe est $\hat S(x) = \sum_k \hat\beta_k\
 
 ### Interpolation ou régression ?
 
-Le cahier des charges demande `CubicSpline` avec un nœud tous les 5 ans ; la note méthodologique précise que l'estimation reste pondérée, « avec la même structure, $A$ étant la base de splines ». Les deux sont réunis ici. **Interpoler** les $\ln m_x$ bruts aux nœuds recopierait dans la courbe le bruit de chaque âge isolé ; avec la **régression**, la courbe est tirée par les âges à beaucoup de décès (les nourrissons) et fait la moyenne des âges bruités. Quand chaque nœud est aussi un âge observé et qu'il n'y a pas d'autre âge, les deux coïncident.
+Une spline cubique naturelle à un nœud tous les 5 ans se construit de deux façons : par **interpolation** des $\ln m_x$ bruts aux nœuds (`CubicSpline`), ou par **régression** pondérée, avec la même structure que le polynôme, $A$ étant la base de splines. La régression est retenue. **Interpoler** les $\ln m_x$ bruts aux nœuds recopierait dans la courbe le bruit de chaque âge isolé ; avec la **régression**, la courbe est tirée par les âges à beaucoup de décès (les nourrissons) et fait la moyenne des âges bruités. Quand chaque nœud est aussi un âge observé et qu'il n'y a pas d'autre âge, les deux coïncident.
 
 ## 4. Détails et décisions d'implémentation
 
 - **Minimum de 3 nœuds** : avec moins, la spline naturelle n'est qu'une droite ; une erreur en français est levée (« zone I trop courte, ou trop d'âges sans décès »).
 - **Âges sans décès** : hors de l'ajustement et hors des nœuds, mais $\hat\mu_x$ est évalué en **chaque** âge reçu.
 - **Prolongement** : droite tangente en logarithme au-delà des nœuds extrêmes (une zone dont le dernier âge n'a aucun décès perd ce nœud).
-- **Réglages** : aucun ; la règle des nœuds est fixée par le cahier des charges. L'argument `knot_step` de la fonction (5 par défaut) existe pour les expériences et les tests, pas pour l'application.
+- **Réglages** : aucun ; la règle des nœuds est fixée (un tous les 5 âges). L'argument `knot_step` de la fonction (5 par défaut) existe pour les expériences et les tests, pas pour l'application.
 - **Paramètres rendus** : `knots` (les âges), `ln_mu_knots` (les $\hat\beta_k$) et `n_params = K`.
 
 ## 5. Forces et limites

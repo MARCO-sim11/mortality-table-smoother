@@ -46,6 +46,7 @@ def show(doc: M.Doc) -> None:
 theme.page_header("Méthodologie", None,
                   "Chaque méthode du lisseur : le modèle, l'estimation pas à pas, ses limites, et ce qu'elle donne sur la France 2020.")
 st.caption("Les fiches sont les fichiers de `docs/methodes/`. Les tableaux de résultats sont produits par le code et vérifiés par les tests.")
+theme.data_credit()
 
 tabs = st.tabs([name for name, _ in M.GROUPS])
 for tab, (_, docs) in zip(tabs, M.GROUPS):

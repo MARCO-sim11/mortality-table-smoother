@@ -46,10 +46,10 @@ $\ell$ est concave en $(A, B)$. Mais la contrainte $A \ge 0$, qu'un Newton nu ig
 2. **Le point $B = 0$** (force constante $A = \sum D / \sum E$) : même test.
 3. **Sinon**, l'optimum est intérieur ($A > 0$, $B > 0$) ; Newton-Raphson $2\times 2$ avec pas réduit de moitié converge depuis un point de départ réalisable.
 
-### 2.3 Écarts à la lettre du cahier des charges (signalés)
+### 2.3 Choix d'implémentation
 
-- **Raffinement de $c$.** Le cahier des charges s'arrête au meilleur point de la grille. Une grille de 100 points laisse $c$ jusqu'à 0,0005 de l'optimum, ce qui coûte 0,3 à 1,5 unité de log-vraisemblance sur la France 2020 : assez pour brouiller une comparaison d'AIC. Le raffinement corrige cela (`REFINE_C = False` rétablit le comportement littéral).
-- **Initialisation.** Le cahier des charges démarre à $A_0 = 0{,}001$, $B_0 = e^{\alpha_{\text{Gompertz}}}$, $c_0 = e^{\beta_{\text{Gompertz}}}$. Avec un profil, il faut un départ à chaque $c$ : $A_0$ = 10 % du taux brut global et $B_0$ qui reproduit le nombre de décès observé. Les deux sont réalisables pour tous les $c$ de la grille, ce qu'un couple $(B_0, c_0)$ unique n'est pas.
+- **Raffinement de $c$.** Une recherche sur grille s'arrête au meilleur point de la grille. Une grille de 100 points laisse $c$ jusqu'à 0,0005 de l'optimum, ce qui coûte 0,3 à 1,5 unité de log-vraisemblance sur la France 2020 : assez pour brouiller une comparaison d'AIC. Le raffinement corrige cela (`REFINE_C = False` s'en tient au meilleur point de la grille).
+- **Initialisation.** Un départ unique serait $A_0 = 0{,}001$, $B_0 = e^{\alpha_{\text{Gompertz}}}$, $c_0 = e^{\beta_{\text{Gompertz}}}$. Avec un profil, il faut un départ à chaque $c$ : $A_0$ = 10 % du taux brut global et $B_0$ qui reproduit le nombre de décès observé. Les deux sont réalisables pour tous les $c$ de la grille, ce qu'un couple $(B_0, c_0)$ unique n'est pas.
 - **Coordonnées.** $B\,c^x$ est calculé comme $b\,w_x$ avec $w_x = c^{x - x_{\text{ref}}} \le 1$ et $b = B\,c^{x_{\text{ref}}}$, $x_{\text{ref}}$ étant l'âge le plus élevé : $c^x$ seul s'étale sur dix ordres de grandeur et rend la hessienne mal conditionnée. Newton est invariant par ce changement d'échelle ; $B = b/c^{x_{\text{ref}}}$ est rapporté.
 
 ## 3. Détails et cas limites

@@ -33,7 +33,7 @@ Le dernier terme ne dépend pas de $\mu$ ; il est conservé pour que `loglik` so
 **Pourquoi Poisson, et pas les moindres carrés ni la binomiale ?**
 
 - Les moindres carrés sur $\ln(D/E)$ supposent une variance constante ; or $\operatorname{Var}[\ln(D/E)] \approx 1/D$ : les âges peu observés pèseraient autant que les autres. Et $\ln 0$ n'existe pas.
-- Le cahier des charges écrit une vraisemblance binomiale (Bernoulli) en zone III. Mais aux âges extrêmes $D_x$ **dépasse** $E_x$ (France 2020 : âge 105 pour les deux sexes, taux jusqu'à 2,0) : une binomiale n'y a plus de vraisemblance. Poisson n'a pas cette limite et donne une seule échelle pour toutes les zones.
+- Une vraisemblance binomiale (Bernoulli) serait le choix naturel en zone III. Mais aux âges extrêmes $D_x$ **dépasse** $E_x$ (France 2020 : âge 105 pour les deux sexes, taux jusqu'à 2,0) : une binomiale n'y a plus de vraisemblance. Poisson n'a pas cette limite et donne une seule échelle pour toutes les zones.
 
 ### Déviance et demi-déviance
 
@@ -51,7 +51,7 @@ La mortalité n'obéit pas à une seule loi sur toute la vie. Les âges sont don
 |---|---|---|---|
 | I | $0 \ldots \omega_1$ | pic de la naissance, chute, minimum vers 8-12 ans, « bosse » des jeunes adultes : non monotone | polynôme de degré 3, spline naturelle |
 | II | $\omega_1 \ldots \omega_2$ | croissance exponentielle de la mortalité avec l'âge | Gompertz, Makeham, Makeham 2ᵉ ordre, Perks |
-| III | $\omega_2 \ldots \omega_3$ | peu d'exposés, décès en dizaines, la hausse **ralentit** | Kannisto, Beard, Coale-Kisker |
+| III | $\omega_2 \ldots \omega_3$ | peu d'exposés, décès en dizaines, la hausse **ralentit** | Kannisto, Beard |
 | toutes | $0 \ldots \omega_3$ | une seule courbe sur tous les âges (option) | spline globale |
 
 **Cas de la zone III.** Une table HMD s'arrête à 109 ans alors que $\omega_3 = 110$ par défaut ; c'est précisément l'extrapolation que cette zone fournit. Le résultat d'une méthode de zone III couvre donc **toujours** les âges $\omega_2, \ldots, \omega_3$, quelles que soient les lignes fournies : celles-ci servent seulement à ajuster la courbe et à calculer `loglik`.
@@ -68,7 +68,6 @@ La mortalité n'obéit pas à une seule loi sur toute la vie. Les âges sont don
 | Perks | II | $\mu_x = (A + B\,c^x)/(1 + D\,c^x)$ | Poisson, Nelder-Mead | 4 |
 | Kannisto | III | $\mu_x = \dfrac{a\,e^{bt}}{1 + a\,e^{bt}},\ t = x-\omega_2$ | Poisson, grille + Newton-Raphson | 2 |
 | Beard | III | $\mu_x = \dfrac{B\,c^x}{1 + K\,B\,c^x}$ | Poisson, Nelder-Mead | 3 |
-| Coale-Kisker | III | $q_x = q_{\omega_2}\,e^{k(x-\omega_2)}$, $q_{\omega_3} = 0{,}6$ | formule directe | 1 |
 | Spline globale | toutes | spline naturelle de $\ln\mu_x$ sur $0\ldots\omega_3$ | moindres carrés pondérés | nœuds |
 
 Le nombre de paramètres $k$ est celui que l'AIC et le BIC comptent (`params['n_params']`).
@@ -114,7 +113,7 @@ Toutes les fonctions `fit_<clé>(ages, Dx, Ex, cfg)` rendent un même objet `Fit
 | `method`, `zone` | clé de la méthode et zone (`zone1`, `zone2`, `zone3`, ou `all` pour la spline globale) |
 | `ages` | les âges couverts (ceux de la zone ; $\omega_2\ldots\omega_3$ en zone III) |
 | `mu_hat` | la courbe lissée, en **chaque** âge de `ages`, y compris ceux ignorés par l'ajustement |
-| `params` | les paramètres estimés (base « âge simple » du cahier des charges) et `n_params` |
+| `params` | les paramètres estimés (en base « âge simple ») et `n_params` |
 | `loglik` | la log-vraisemblance de Poisson complète de la courbe sur les lignes fournies |
 | `converged`, `n_iter` | l'arrêt a-t-il eu lieu normalement, après combien de pas ou d'itérations |
 | `message` | un diagnostic en français (itérations, avertissements) |
@@ -134,7 +133,7 @@ Une méthode qui ne peut pas être ajustée (trop peu d'âges avec décès, par 
 
 ## 9. Pour continuer
 
-Une fiche par méthode (polynôme, spline, Gompertz, Makeham, Makeham 2ᵉ ordre, Perks, Kannisto, Beard, Coale-Kisker, spline globale), puis le raccord des zones, l'évaluation et la sélection, et la construction de la table de vie.
+Une fiche par méthode (polynôme, spline, Gompertz, Makeham, Makeham 2ᵉ ordre, Perks, Kannisto, Beard, spline globale), puis le raccord des zones, l'évaluation et la sélection, et la construction de la table de vie.
 
 ## Références
 

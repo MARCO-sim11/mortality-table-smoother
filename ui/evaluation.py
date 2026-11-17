@@ -78,7 +78,7 @@ def _style_figure(fig: go.Figure, cfg: C.SmootherConfig, title: str, ytitle: str
 
 def residual_figure(rs: pd.DataFrame, cfg: C.SmootherConfig) -> go.Figure:
     """Spec 5.3: the deviance residuals by age, one line per method; the +-2 band of the methodology; the zone
-    boundaries dashed. A residual beyond +-8 (Coale-Kisker on a big table) is drawn at the edge, its value on hover."""
+    boundaries dashed. A residual beyond +-8 (a law far from the data on a big table) is drawn at the edge, its value on hover."""
     fig = go.Figure()
     for key in rs["method"].unique():
         g = rs[rs["method"] == key]

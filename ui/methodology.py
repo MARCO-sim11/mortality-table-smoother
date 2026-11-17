@@ -47,10 +47,10 @@ GROUPS: tuple = (
     ("Zone I", (_method("01-polynome-degre-3", "poly3"), _method("02-spline-naturelle", "spline"))),
     ("Zone II", (_method("03-gompertz", "gompertz"), _method("04-makeham", "makeham"),
                  _method("05-makeham-2e-ordre", "makeham2"), _method("06-perks", "perks"))),
-    ("Zone III", (_method("07-kannisto", "kannisto"), _method("08-beard", "beard"), _method("09-coale-kisker", "coale_kisker"))),
-    ("Tous âges", (_method("10-spline-globale", "spline_all"),)),
-    ("Raccord et évaluation", (Doc("11-raccord", "Raccord des zones"), Doc("12-evaluation", "Évaluation et sélection"),
-                               Doc("13-table-de-vie", "Table de vie"))),
+    ("Zone III", (_method("07-kannisto", "kannisto"), _method("08-beard", "beard"))),
+    ("Tous âges", (_method("09-spline-globale", "spline_all"),)),
+    ("Raccord et évaluation", (Doc("10-raccord", "Raccord des zones"), Doc("11-evaluation", "Évaluation et sélection"),
+                               Doc("12-table-de-vie", "Table de vie"))),
 )
 
 

@@ -17,7 +17,7 @@ then `mu_to_q` (spec 4.4: q = 1 - exp(-mu)) and `build_life_table` (spec 4.4: co
 
 Why `evaluate_curve` exists. The window around omega1 reaches omega1 + 2 sigma, past the ages zone I was fitted on, and
 down to omega1 - 2 sigma, before zone II starts: a `FitResult` only stores `mu_hat` on its own ages, so the joiner has to
-evaluate the fitted formulas elsewhere, from `params` (all nine methods; each is checked against its own `mu_hat`).
+evaluate the fitted formulas elsewhere, from `params` (all eight methods; each is checked against its own `mu_hat`).
 Where a zone is used "as is" (outside the windows, spec 4.2) the value returned is its stored `mu_hat`, bit for bit.
 
 Decisions the specs leave open or contradict, made here and flagged to the user:
@@ -75,7 +75,6 @@ def evaluate_curve(result: FitResult, ages) -> np.ndarray:
         perks         (A + B c^x) / (1 + D c^x)
         kannisto      sigmoid(ln a + b (x - x0))
         beard         B c^x / (1 + K B c^x)
-        coale_kisker  -ln(1 - q),  q = min(q_omega2 e^(k (x - x0)), 1 - 1e-15)
 
     The formulas are those of the zone modules written once more from the reported parameters; the tests check that each
     reproduces the method's own `mu_hat` on its ages, so the two cannot drift apart unnoticed. Overflow gives inf, never
@@ -104,9 +103,6 @@ def evaluate_curve(result: FitResult, ages) -> np.ndarray:
         if method == "beard":
             z = p["B"] * p["c"] ** x
             return z / (1.0 + p["K"] * z)
-        if method == "coale_kisker":
-            q = np.minimum(p["q_omega2"] * np.exp(p["k"] * (x - p["x0"])), 1.0 - 1e-15)
-            return -np.log1p(-q)
     raise ValueError(f"Raccord : méthode inconnue « {method} » (aucune formule pour évaluer sa courbe).")
 
 
@@ -217,7 +213,7 @@ def mu_to_q(mu) -> np.ndarray:
     """q = 1 - exp(-mu) (spec 4.4), through `expm1` so that a tiny mu keeps its precision (q = 1e-18, not 0).
 
     The spec says "sous hypothese UDD" but writes the constant-force bridge; that formula is what is used, here and in
-    `join_zones`' consumers, so that Coale-Kisker's q round-trips exactly (zone3 gives mu = -ln(1 - q))."""
+    `join_zones`' consumers, so that a q given as the end point of a zone round-trips exactly (mu = -ln(1 - q))."""
     return -np.expm1(-np.asarray(mu, dtype=float))
 
 
@@ -233,7 +229,7 @@ def build_life_table(mu_hat, radix: float = RADIX, open_tail: bool = True) -> pd
         T_x = sum over y >= x of L_y,   e_x = T_x / l_x      (complete expectation of life at exact age x, as HMD's ex)
 
     The table stops at the last age of `mu_hat` WITHOUT forcing q = 1 there (omega3's q is 0.4-0.6 on a real table, and
-    Coale-Kisker's target q(omega3) = 0.6 would be overwritten), so l_{omega3} p_{omega3} people are still alive at the end.
+    the curve's own q(omega3) would be overwritten), so l_{omega3} p_{omega3} people are still alive at the end.
     They are not dropped from e_x: with `open_tail` (default) they live on at the constant force mu(omega3), which adds
     l_{last+1} / mu_last person-years to the last L, so that e_last = (1 + p) / 2 + p / mu_last (p = exp(-mu_last));
     with `open_tail=False` only the year they have just completed is counted (e_last = (1 + p) / 2), the finite truncation

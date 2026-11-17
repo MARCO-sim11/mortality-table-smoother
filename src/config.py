@@ -78,7 +78,6 @@ METHODS: dict[str, MethodSpec] = {m.key: m for m in (
     MethodSpec("perks",        "Perks",              "zone2", "zone2_perks",     4),
     MethodSpec("kannisto",     "Kannisto",           "zone3", "zone3",           2),
     MethodSpec("beard",        "Beard",              "zone3", "zone3",           3),
-    MethodSpec("coale_kisker", "Coale-Kisker",       "zone3", "zone3",           1),
 )}
 
 
@@ -145,7 +144,7 @@ class SmootherConfig:
     omega3: int = DEFAULT_OMEGA3             # age limit (end of zone III)
     z1_methods: list = field(default_factory=lambda: _all_keys("zone1"))   # ['poly3', 'spline']
     z2_methods: list = field(default_factory=lambda: _all_keys("zone2"))   # ['gompertz', 'makeham', 'makeham2', 'perks']
-    z3_methods: list = field(default_factory=lambda: _all_keys("zone3"))   # ['kannisto', 'beard', 'coale_kisker']
+    z3_methods: list = field(default_factory=lambda: _all_keys("zone3"))   # ['kannisto', 'beard']
     sigma_join: float = DEFAULT_SIGMA_JOIN   # half-width of the tanh window
     nr_maxiter: int = DEFAULT_NR_MAXITER     # Newton-Raphson iteration cap
     nr_tol: float = DEFAULT_NR_TOL           # NR stopping criterion

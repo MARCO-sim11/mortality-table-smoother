@@ -11,7 +11,7 @@
 | **Contient** | Makeham ($D = 0$), donc Gompertz |
 | **Code** | `src/zone2_makeham2.py`, fonction `fit_makeham2` |
 
-> Attention au nom : « Makeham 2ᵉ ordre » désigne ici la loi à **deux** exponentielles, pas une « seconde loi de Makeham » au sens de la littérature. La note méthodologique appelle $e$ la seconde base ; le cahier des charges et ce code l'appellent $d$.
+> Attention au nom : « Makeham 2ᵉ ordre » désigne ici la loi à **deux** exponentielles, pas une « seconde loi de Makeham » au sens de la littérature. La seconde base est notée $d$ dans cette fiche et dans le code.
 
 ## 1. La loi
 
@@ -29,7 +29,7 @@ Deux exponentielles de bases différentes suffisent à courber le logarithme de 
 
 ### 2.1 Pourquoi Nelder-Mead
 
-Avec cinq paramètres, dont deux bases, la hessienne est mal conditionnée et fortement corrélée (les $\ln B$ et $\ln c$ se compensent). Le cahier des charges prescrit donc la méthode du **simplexe de Nelder-Mead**, sans dérivée.
+Avec cinq paramètres, dont deux bases, la hessienne est mal conditionnée et fortement corrélée (les $\ln B$ et $\ln c$ se compensent). On utilise donc la méthode du **simplexe de Nelder-Mead**, sans dérivée.
 
 ### 2.2 Les étapes
 

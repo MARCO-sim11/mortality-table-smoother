@@ -1,11 +1,10 @@
-"""zone3.py - Module 3e: Zone III (ages omega2 .. omega3), the oldest ages: Kannisto, Beard, Coale-Kisker.
+"""zone3.py - Module 3e: Zone III (ages omega2 .. omega3), the oldest ages: Kannisto and Beard.
 
 Where the data thin out (few exposed, deaths in tens) and mortality decelerates instead of exploding like Gompertz
-(methodology doc, section 4). Three methods, one per key of `config.METHODS`, all in this module (spec: zone3.py)::
+(methodology doc, section 4). Two methods, one per key of `config.METHODS`, both in this module::
 
     fit_kannisto(ages, Dx, Ex, cfg)       mu_x = a e^(b t) / (1 + a e^(b t)),  t = x - omega2     2 parameters, plateau 1
     fit_beard(ages, Dx, Ex, cfg)          mu_x = B c^x / (1 + K B c^x)                            3 parameters, plateau 1/K
-    fit_coale_kisker(ages, Dx, Ex, cfg)   q_x = q_omega2 e^(k (x - omega2)), q(omega3) = 0.6      1 parameter, deterministic
 
 WHAT THE RESULT COVERS (the one place where zone III differs from zones I and II). The joiner needs mu on every age up to
 omega3 (spec 4.3: "tableau de longueur omega3 + 1"), yet a table such as HMD stops at 109 while omega3 = 110 by default, and
@@ -24,9 +23,6 @@ Decisions the specs leave open or contradict, made here and flagged to the user:
   * ORIGIN OF THE AGE in Kannisto: t = x - omega2. The spec's grid a in [0.001, 1], b in [0.05, 0.2] has no point near the
     optimum with absolute ages (a would be 7e-8) but does with t, where a is the odds at omega2 (0.06-0.10 on France
     2020). The absolute-age a of the literature is a e^(-b omega2); `params['x0']` gives the origin.
-  * COALE-KISKER ANCHOR: the crude rate observed at age omega2, turned into q by q = 1 - exp(-m), exactly as the joiner
-    does (spec 4.4); the target is the spec's 0.6 at omega3. The anchor is one raw age, so for a small population it is
-    noisy and so is the whole extrapolation.
 
 Conventions of the zone modules (see zone1_poly, zone2_gompertz, fit_common): `ages, Dx, Ex` are the rows of ONE sex (zone
 rows omega2..omega3, both bounds included), `loglik` is `fit_common.poisson_loglik` over the supplied rows, `n_iter` counts
@@ -45,7 +41,6 @@ from src.fit_common import check_columns, half_deviance, nelder_mead, poisson_lo
 
 LN_A_RANGE = (-10.0, 0.0)    # grid on ln a: contains the spec's a in [0.001, 1], and the methodology's [-10, 0]
 B_RANGE = (0.05, 0.20)       # grid on b (spec 3e)
-Q_TARGET = 0.6               # Coale-Kisker: q at omega3 (spec 3e: "q_cible conventionnelle : 0.6")
 MAX_HALVINGS = 60
 TRUST_LOGIT = 4.0            # a Newton step never moves the logit eta = ln a + b t of any age by more than this
 SIMPLEX_STEP = 0.1           # about 10% on each coordinate of Beard's initial simplex
@@ -301,75 +296,3 @@ def fit_beard(ages, Dx, Ex, cfg: SmootherConfig | None = None) -> FitResult:
         message += " ATTENTION : Nelder-Mead n'a pas convergé (tolérances non atteintes ou redémarrages épuisés)."
     return _result("beard", cfg, x, d, e, lambda ages_: curve(th, ages_ - x0),
                    {"B": float(B), "c": c, "K": K, "n_params": 3}, nm.converged, nm.n_iter, message)
-
-
-# --------------------------------------------------------------------------
-# Coale-Kisker
-# --------------------------------------------------------------------------
-
-
-def fit_coale_kisker(ages, Dx, Ex, cfg: SmootherConfig | None = None, q_target: float = Q_TARGET) -> FitResult:
-    """Zone III, method `coale_kisker`: deterministic log-linear extrapolation of q from omega2 to omega3 (spec 3e).
-
-    No estimation, no likelihood maximisation, no iteration (spec: "formule directe")::
-
-        q_omega2 = 1 - exp(-D / E)      at the row of age omega2 (the observed anchor)
-        k        = (ln q_target - ln q_omega2) / (omega3 - omega2),       q_target = 0.6 by default (q at omega3)
-        q_x      = q_omega2 exp(k (x - omega2)),        mu_x = -ln(1 - q_x)
-
-    q_x is a straight line in ln q from the anchor to the regulatory target, and `mu_hat` is the rate that gives back
-    exactly that q through the constant-force bridge q = 1 - exp(-mu) the joiner applies (spec 4.4). `mu_hat` equals the
-    crude rate at omega2 and is only the extrapolation beyond. The anchor is ONE raw age: a small population gives a noisy
-    anchor, and the whole curve moves with it. The rows after omega2 play no role in the curve; they are only the rows
-    on which `loglik` is evaluated, so that the evaluator can put this curve beside the fitted ones (it is the
-    Poisson log-likelihood of a curve that was not fitted to them, and `n_params = 1` counts k).
-
-    Parameters
-    ----------
-    ages, Dx, Ex : array-like, shape (n,)
-        The rows of ONE sex in the zone; the row of age exactly `cfg.omega2` is required, with E > 0 and D > 0.
-    cfg : SmootherConfig, optional
-        Reads `omega2` (the anchor) and `omega3` (the target age).
-    q_target : float, default 0.6
-        q at omega3, strictly between 0 and 1. 0.6 is the spec's convention and not a setting of the app; it is far
-        below what France 2020 shows (observed q already 0.63-0.86 at 109), which is why the curve fits that table badly.
-
-    Returns
-    -------
-    FitResult
-        method='coale_kisker', zone='zone3'; `ages` = omega2..omega3; `mu_hat` as above; `params` = {'k',
-        'q_omega2', 'q_target', 'x0': omega2, 'n_params': 1} (x0 so that the curve can be evaluated from `params` alone); `loglik` the Poisson log-likelihood at the supplied rows;
-        `converged` True and `n_iter` 0 (closed form); `message` a French diagnostic, with a warning when the anchor is
-        already at or above the target (k <= 0: the extrapolation would not rise).
-
-    Raises
-    ------
-    ValueError
-        Columns of different lengths, a duplicated or non-finite age, negative deaths, `q_target` outside ]0, 1[, no row
-        at age omega2, or an anchor row without exposure or without deaths (q = 0 has no logarithm).
-    """
-    if not 0.0 < q_target < 1.0:
-        raise ValueError("q_target doit être strictement compris entre 0 et 1.")
-    cfg = cfg if cfg is not None else SmootherConfig()
-    x, d, e = check_columns(ages, Dx, Ex)
-    anchor = np.flatnonzero(x == float(cfg.omega2))
-    if anchor.size == 0:
-        raise ValueError(f"Coale-Kisker : la ligne de l'âge ω₂ = {cfg.omega2} (point d'ancrage) est absente.")
-    da, ea = d[anchor[0]], e[anchor[0]]
-    if not (np.isfinite(da) and np.isfinite(ea) and ea > 0 and da > 0):
-        raise ValueError(f"Coale-Kisker : l'âge ω₂ = {cfg.omega2} n'a pas d'exposition ou pas de décès, "
-                         f"le taux d'ancrage est inutilisable.")
-    q2 = float(-np.expm1(-da / ea))                                             # 1 - exp(-m)
-    x0 = float(cfg.omega2)
-    k = float((np.log(q_target) - np.log(q2)) / (cfg.omega3 - cfg.omega2))
-
-    def mu_of(ages_):
-        q = np.minimum(q2 * np.exp(k * (ages_ - x0)), 1.0 - 1e-15)
-        return -np.log1p(-q)
-
-    message = (f"Extrapolation déterministe de q de ω₂ = {cfg.omega2} (q = {q2:.4f}, observé) à ω₃ = {cfg.omega3} "
-               f"(cible {q_target:g}) ; k = {k:.5f}.")
-    if k <= 0:
-        message += " Attention : l'ancrage atteint déjà la cible, k ≤ 0 (l'extrapolation ne croît pas)."
-    return _result("coale_kisker", cfg, x, d, e, mu_of,
-                   {"k": k, "q_omega2": q2, "q_target": float(q_target), "x0": x0, "n_params": 1}, True, 0, message)

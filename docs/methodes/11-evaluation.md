@@ -49,7 +49,7 @@ Le critère de Whittaker-Henderson d'une courbe lissée $z$ pour des taux bruts 
 
 $$\mathrm{WH}(z) \;=\; \underbrace{\sum_x w_x\,(q_x - z_x)^2}_{\text{fidélité}} \;+\; h\,\underbrace{\sum_x \big(\Delta^2 z_x\big)^2}_{\text{rugosité}} .$$
 
-Ici c'est un **diagnostic** d'une courbe déjà ajustée : $q$ et $z$ sont les $q$ bruts et lissés par âges consécutifs. Choix faits (le cahier des charges ne donne que la formule) : poids $w_x = E_x/\overline{E}$ (l'exposition, ramenée à sa moyenne pour que la fidélité ne dépende pas de la taille de la population), ordre 2 ($\Delta^2$, la différence seconde), $h = 1$ par défaut (réglable dans la page). Le tableau donne la fidélité et la rugosité **séparément** et leur somme à $h$ : seul leur rapport compte, et d'une méthode à l'autre la rugosité seule est le nombre comparable.
+Ici c'est un **diagnostic** d'une courbe déjà ajustée : $q$ et $z$ sont les $q$ bruts et lissés par âges consécutifs. Choix faits (la formule ne précise ni les poids ni $h$) : poids $w_x = E_x/\overline{E}$ (l'exposition, ramenée à sa moyenne pour que la fidélité ne dépende pas de la taille de la population), ordre 2 ($\Delta^2$, la différence seconde), $h = 1$ par défaut (réglable dans la page). Le tableau donne la fidélité et la rugosité **séparément** et leur somme à $h$ : seul leur rapport compte, et d'une méthode à l'autre la rugosité seule est le nombre comparable.
 
 ## 3. La règle de suggestion
 
@@ -63,11 +63,11 @@ Les menus de la page Évaluation sont préremplis avec cette suggestion ; l'util
 
 ## 4. Lire le tableau : la France 2020
 
-Voici le tableau des neuf méthodes de zone sur la France 2020 (réglages par défaut, sans la spline globale). Quelques lectures :
+Voici le tableau des huit méthodes de zone sur la France 2020 (réglages par défaut, sans la spline globale). Quelques lectures :
 
 - **Zone I** : le polynôme l'emporte sur la spline naturelle (moins de paramètres, ΔAIC de 13 à 53 pour la spline) ; les deux ont des résidus grands (d'un tiers à deux tiers des âges hors de $\pm 2$).
 - **Zone II** : Makeham 2ᵉ ordre est loin devant, de 600 à plus de 2 000 points d'AIC ; Gompertz, Makeham et Perks sont tous très loin. Perks vaut Makeham plus 2 (voir la fiche de Perks).
-- **Zone III** : Beard a le meilleur AIC mais la règle écarte celui des femmes (séquences significatives, $p \approx 0{,}025$) au profit de Kannisto ; Coale-Kisker est loin derrière.
+- **Zone III** : Beard a le meilleur AIC mais la règle écarte celui des femmes (séquences significatives, $p \approx 0{,}025$) au profit de Kannisto.
 
 <!-- resultats:debut -->
 | Sexe | Zone | Méthode | p | AIC | ΔAIC | p(runs) | \|r\| > 2 | Suggérée |
@@ -80,7 +80,6 @@ Voici le tableau des neuf méthodes de zone sur la France 2020 (réglages par d�
 | Féminin | Zone II | Perks | 4 | 2741.2 | 1795.0 | 0.000 | 69.7 % |  |
 | Féminin | Zone III | Kannisto | 2 | 617.9 | 6.0 | 0.545 | 24.0 % | oui |
 | Féminin | Zone III | Beard | 3 | 611.8 | 0.0 | 0.025 | 32.0 % |  |
-| Féminin | Zone III | Coale-Kisker | 1 | 17302.0 | 16690.2 | — | 88.0 % |  |
 | Masculin | Zone I | Polynôme deg 3 | 4 | 628.1 | 0.0 | 0.007 | 47.6 % | oui |
 | Masculin | Zone I | Splines naturelles | 5 | 680.7 | 52.6 | 0.014 | 61.9 % |  |
 | Masculin | Zone II | Gompertz | 2 | 2124.9 | 1001.8 | 0.000 | 56.1 % |  |
@@ -89,7 +88,6 @@ Voici le tableau des neuf méthodes de zone sur la France 2020 (réglages par d�
 | Masculin | Zone II | Perks | 4 | 1748.0 | 624.9 | 0.000 | 56.1 % |  |
 | Masculin | Zone III | Kannisto | 2 | 271.9 | 11.3 | 0.499 | 12.0 % |  |
 | Masculin | Zone III | Beard | 3 | 260.5 | 0.0 | 0.336 | 12.0 % | oui |
-| Masculin | Zone III | Coale-Kisker | 1 | 7729.2 | 7468.7 | — | 84.0 % |  |
 <!-- resultats:fin -->
 
 ## Références

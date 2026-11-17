@@ -42,7 +42,6 @@ PARAM_LABELS = {
     "perks": [("A", "A"), ("B", "B"), ("c", "c"), ("D", "D")],
     "kannisto": [("a", "a"), ("b", "b")],
     "beard": [("B", "B"), ("c", "c"), ("K", "K")],
-    "coale_kisker": [("k", "k"), ("q_omega2", "q(ω₂)"), ("q_target", "q cible")],
 }
 
 
@@ -135,7 +134,7 @@ def junction_block() -> str:
 
 
 def evaluation_block() -> str:
-    """The comparison table of the nine zone methods (France 2020), both sexes."""
+    """The comparison table of the eight zone methods (France 2020), both sexes."""
     rows = []
     for sex in ("Female", "Male"):
         table = evaluation(sex)
@@ -168,11 +167,10 @@ BLOCKS = {
     "06-perks": lambda: zone_method_block("perks"),
     "07-kannisto": lambda: zone_method_block("kannisto"),
     "08-beard": lambda: zone_method_block("beard"),
-    "09-coale-kisker": lambda: zone_method_block("coale_kisker"),
-    "10-spline-globale": spline_all_block,
-    "11-raccord": junction_block,
-    "12-evaluation": evaluation_block,
-    "13-table-de-vie": life_table_block,
+    "09-spline-globale": spline_all_block,
+    "10-raccord": junction_block,
+    "11-evaluation": evaluation_block,
+    "12-table-de-vie": life_table_block,
 }
 
 

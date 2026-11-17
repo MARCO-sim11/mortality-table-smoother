@@ -38,7 +38,7 @@ Sans contrainte et d'ordre 1, avec l'âge compté depuis $\omega_2$ : $(\ln\beta
 
 ### 2.3 Pourquoi Nelder-Mead
 
-La note méthodologique propose un Newton-Raphson $3\times 3$ ; le cahier des charges demande Nelder-Mead, qui est utilisé. Une version de laboratoire en BFGS à gradient numérique ne signalait pas de convergence sur la France 2020 ; celle-ci, si. Les plafonds sont ceux de `fit_common` (2 000 itérations par exécution, 5 relances au plus), pas `nr_maxiter` (un plafond de pas de Newton) ; `nr_tol` est la tolérance de l'objectif. La vraisemblance est celle de Poisson, comme pour Kannisto.
+Un Newton-Raphson $3\times 3$ serait possible ; c'est Nelder-Mead qui est utilisé. Une version de laboratoire en BFGS à gradient numérique ne signalait pas de convergence sur la France 2020 ; celle-ci, si. Les plafonds sont ceux de `fit_common` (2 000 itérations par exécution, 5 relances au plus), pas `nr_maxiter` (un plafond de pas de Newton) ; `nr_tol` est la tolérance de l'objectif. La vraisemblance est celle de Poisson, comme pour Kannisto.
 
 ## 3. Ce que couvre le résultat
 

@@ -1,0 +1,7 @@
+# Test suite kept on the author's machine only (not published), except the generator of the synthetic data
+tests/*
+!tests/synthetic.py
+
+# Compiled Python files
+__pycache__/
+*.pyc

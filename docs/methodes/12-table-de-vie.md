@@ -23,11 +23,11 @@ $$l_{x+1} = l_x\,p_x, \qquad d_x = l_x\,q_x, \qquad L_x = l_{x+1} + \tfrac12\,d_
 - $L_x$ : années-personnes vécues entre $x$ et $x+1$ ; les décès de l'année sont supposés en moyenne au milieu ($a_x = \tfrac12$).
 - $e_x$ : espérance de vie **complète** à l'âge exact $x$, comme l'$e_x$ de la HMD.
 
-**Le pont $q = 1 - e^{-\mu}$.** Le cahier des charges dit « sous hypothèse UDD » mais écrit cette formule, qui est celle de la **force constante** sur l'année. C'est elle qui est utilisée, ici et dans le raccord, pour que le $q$ de Coale-Kisker se retrouve exactement ($\mu = -\ln(1 - q)$ dans la zone III).
+**Le pont $q = 1 - e^{-\mu}$.** Cette formule est celle de la **force constante** sur l'année, et non celle d'une répartition uniforme des décès (UDD). C'est elle qui est utilisée, ici et dans le raccord, de sorte qu'un $q$ se retrouve exactement à partir de $\mu$ ($\mu = -\ln(1 - q)$).
 
 ## 2. La table n'est pas refermée de force
 
-La table s'arrête au dernier âge de $\mu$ **sans forcer $q = 1$** à $\omega_3$ : à cet âge $q$ vaut 0,4 à 0,6 sur une table réelle, et la cible de 0,6 de Coale-Kisker serait écrasée. Il reste donc $l_{\omega_3}\,p_{\omega_3}$ personnes en vie à la fin du tableau. Ces survivantes ne sont pas retirées de l'espérance de vie : avec la **queue ouverte** (par défaut), elles vivent à la force constante $\mu_{\omega_3}$, ce qui ajoute $l_{\omega_3+1}/\mu_{\omega_3}$ années-personnes au dernier $L$ :
+La table s'arrête au dernier âge de $\mu$ **sans forcer $q = 1$** à $\omega_3$ : à cet âge $q$ vaut 0,4 à 0,6 sur une table réelle, et cette valeur serait écrasée. Il reste donc $l_{\omega_3}\,p_{\omega_3}$ personnes en vie à la fin du tableau. Ces survivantes ne sont pas retirées de l'espérance de vie : avec la **queue ouverte** (par défaut), elles vivent à la force constante $\mu_{\omega_3}$, ce qui ajoute $l_{\omega_3+1}/\mu_{\omega_3}$ années-personnes au dernier $L$ :
 
 $$e_{\omega_3} \;=\; \frac{1 + p}{2} \;+\; \frac{p}{\mu_{\omega_3}}, \qquad p = e^{-\mu_{\omega_3}} .$$
 

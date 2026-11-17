@@ -24,7 +24,7 @@ Avec $D = 0$, Perks est Makeham ; sa log-vraisemblance maximale n'est donc jamai
 
 ## 2. L'estimation
 
-Le cahier des charges prescrit le simplexe de Nelder-Mead : avec une forme fractionnaire à quatre paramètres, la hessienne de Newton est mal conditionnée.
+On utilise le simplexe de Nelder-Mead : avec une forme fractionnaire à quatre paramètres, la hessienne de Newton est mal conditionnée.
 
 ### 2.1 Les étapes
 

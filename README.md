@@ -5,7 +5,6 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red)
-![Tests](https://img.shields.io/badge/tests-pytest-informational)
 ![Licence](https://img.shields.io/badge/Licence-MIT-green)
 
 ---
@@ -13,7 +12,7 @@
 ## Ce que fait l'outil
 
 1. **Charge** des taux de mortalité bruts (ou des décès et une exposition) depuis un fichier HMD, INSEE, Eurostat, CSV ou Excel, et contrôle leur qualité.
-2. **Ajuste** neuf méthodes de lissage réparties en trois zones d'âge, séparément pour chaque sexe, plus, en option, une **spline unique sur tous les âges**.
+2. **Ajuste** huit méthodes de lissage réparties en trois zones d'âge, séparément pour chaque sexe, plus, en option, une **spline unique sur tous les âges**.
 3. **Évalue** chaque méthode (AIC, BIC, χ², déviance, runs test, résidus, Whittaker-Henderson) et suggère la meilleure de chaque zone.
 4. **Raccorde** les zones choisies en une courbe `μₓ` continue sur `[0, ω₃]`, en déduit la table de vie, puis l'**exporte** (Excel, CSV, texte au format HMD).
 
@@ -21,7 +20,7 @@
 flowchart LR
     A["Fichiers<br/>HMD · INSEE · CSV · Excel"] --> B["loader<br/>table sexe · âge · Dx · Ex"]
     B --> C["config<br/>ω₁, ω₂, ω₃, méthodes, σ"]
-    C --> D["zone1 · zone2 · zone3<br/>9 méthodes + spline globale"]
+    C --> D["zone1 · zone2 · zone3<br/>8 méthodes + spline globale"]
     D --> E["evaluator<br/>critères et suggestion"]
     E --> F["joiner<br/>raccord tanh, table de vie"]
     F --> G["exporter<br/>Excel · CSV · TXT"]
@@ -34,7 +33,7 @@ flowchart LR
 Python 3.11 ou plus récent.
 
 ```bash
-git clone https://gitlab.com/<namespace>/mortality-table-smoother.git
+git clone https://github.com/MARCO-sim11/mortality-table-smoother.git
 cd mortality-table-smoother
 pip install -r requirements.txt
 python -m streamlit run app.py
@@ -44,7 +43,7 @@ python -m streamlit run app.py
 > (cas de Python installé depuis le Microsoft Store sous Windows). Lancez la commande **depuis la racine du projet**.
 
 **Premier essai en trois minutes** avec le fichier fourni `sample_data/FRA_taux_bruts_moment_2020_female_male.csv`
-(France 2020, féminin et masculin, issu de la Human Mortality Database) :
+(France 2020, féminin et masculin, extrait de la Human Mortality Database : voir [Données](#données)) :
 
 1. **Accueil** : cliquez sur « Lisser des tables du moment ».
 2. Page **Chargement** : choisissez « C — Un fichier de données élémentaires », déposez le fichier, cliquez sur **Charger**.
@@ -54,7 +53,7 @@ python -m streamlit run app.py
 
 Le thème Risk Data Lab est dans `.streamlit/config.toml`, que Streamlit lit dans le dossier où l'on lance `streamlit run` : lancez bien la commande depuis la racine du projet.
 
-Le dossier `sample_data/` contient aussi des fichiers synthétiques, un par disposition de fichiers acceptée.
+Le dossier `sample_data/` contient aussi des fichiers **synthétiques** (inventés, sans valeur démographique), un par disposition de fichiers acceptée : ils sont produits par `tests/synthetic.py`.
 
 ---
 
@@ -62,8 +61,8 @@ Le dossier `sample_data/` contient aussi des fichiers synthétiques, un par disp
 
 L'**accueil** demande quelles tables lisser : **du moment** (une année civile) ou **générationnelles** (une génération), cette seconde
 voie étant une extension qui réutilise la même chaîne de lissage. Le choix ouvre la page Chargement et reste rappelé en haut de la barre latérale ; un autre choix
-à l'accueil abandonne les données déjà chargées, qui ne correspondraient plus. La barre latérale marine, présente sur toutes les pages y compris l'accueil, donne les liens des quatre pages, avec une coche ✓ sur celles
-déjà faites, et un lien vers l'accueil. Chaque page se souvient de ses choix (sexe affiché, cases « Lier », h, disposition des fichiers) quand on la quitte et qu'on y revient.
+à l'accueil abandonne les données déjà chargées, qui ne correspondraient plus. La barre latérale marine, présente sur toutes les pages y compris l'accueil, donne, de haut en bas, le lien vers l'accueil, ceux des quatre pages (avec une coche ✓ sur celles
+déjà faites) et celui de la page Méthodologie. Chaque page se souvient de ses choix (sexe affiché, cases « Lier », h, disposition des fichiers) quand on la quitte et qu'on y revient.
 
 | # | Page | Ce qu'on y fait |
 |---|--------|-----------------|
@@ -97,12 +96,11 @@ Les formules sont en LaTeX (rendues par GitHub, GitLab et par la page Méthodolo
 | [Cadre général](docs/methodes/00-cadre-general.md) | notations, vraisemblance de Poisson, déviance, Newton-Raphson et Nelder-Mead, modèles emboîtés, `FitResult` |
 | [Polynôme](docs/methodes/01-polynome-degre-3.md), [Spline naturelle](docs/methodes/02-spline-naturelle.md) | zone I : moindres carrés pondérés sur $\ln(D/E)$ |
 | [Gompertz](docs/methodes/03-gompertz.md), [Makeham](docs/methodes/04-makeham.md), [Makeham 2ᵉ ordre](docs/methodes/05-makeham-2e-ordre.md), [Perks](docs/methodes/06-perks.md) | zone II : maximum de vraisemblance de Poisson |
-| [Kannisto](docs/methodes/07-kannisto.md), [Beard](docs/methodes/08-beard.md), [Coale-Kisker](docs/methodes/09-coale-kisker.md) | zone III : les âges extrêmes |
-| [Spline globale](docs/methodes/10-spline-globale.md) | une spline sur tous les âges |
-| [Raccord](docs/methodes/11-raccord.md), [Évaluation](docs/methodes/12-evaluation.md), [Table de vie](docs/methodes/13-table-de-vie.md) | des trois zones à la table finale |
+| [Kannisto](docs/methodes/07-kannisto.md), [Beard](docs/methodes/08-beard.md) | zone III : les âges extrêmes |
+| [Spline globale](docs/methodes/09-spline-globale.md) | une spline sur tous les âges |
+| [Raccord](docs/methodes/10-raccord.md), [Évaluation](docs/methodes/11-evaluation.md), [Table de vie](docs/methodes/12-table-de-vie.md) | des trois zones à la table finale |
 
-Chaque fiche contient un tableau « Résultats sur la France 2020 » **produit par le code** (`python docs/build_method_results.py`). Les tests échouent quand un tableau, un nom de fonction
-ou un chiffre cité sur l'algorithme ne correspond plus au programme : la documentation ne peut pas dériver en silence.
+Chaque fiche contient un tableau « Résultats sur la France 2020 » **produit par le code** (`python docs/build_method_results.py`) ; `python docs/build_method_results.py --check` dit quels tableaux sont périmés.
 
 ## Méthodes par zone
 
@@ -116,7 +114,6 @@ ou un chiffre cité sur l'algorithme ne correspond plus au programme : la docume
 | | | Perks | `μₓ = (A + B·cˣ) / (1 + D·cˣ)` | MLE Poisson, Nelder-Mead depuis Makeham |
 | **III** | ω₂ – ω₃ | Kannisto | `μₓ = a·eᵇᵗ / (1 + a·eᵇᵗ)`, `t = x − ω₂` | Grille 2D sur `(ln a, b)`, puis Newton-Raphson 2×2 |
 | | | Beard | `μₓ = B·cˣ / (1 + K·B·cˣ)` | MLE Poisson, Nelder-Mead depuis Kannisto |
-| | | Coale-Kisker | `qₓ = q_ω₂ · exp(k·(x − ω₂))`, `q(ω₃) = 0,6` | Formule directe, sans estimation |
 | **Toutes** | 0 – ω₃ | Spline globale (option, décochée par défaut) | Même spline naturelle, un nœud tous les 5 âges, sur tous les âges | Même WLS que la zone I, mais sur tout `[0, ω₃]` |
 
 **Spline sur tous les âges.** Cochée sur la page Paramétrage, elle est ajustée **une seule fois** sur toute la table, quelles que soient ω₁ et ω₂, puis proposée
@@ -188,9 +185,9 @@ Les téléchargements sont construits au clic : modifier un réglage ailleurs ne
 
 ## Choix méthodologiques notables
 
-- **Vraisemblance de Poisson partout**, y compris en zone III, où le cahier des charges évoque une loi binomiale. Aux plus grands âges, `Dx` dépasse `Ex` (France 2020 : 105 ans pour les deux sexes, taux jusqu'à 2,0) : une binomiale n'y a plus de vraisemblance.
+- **Vraisemblance de Poisson partout**, y compris en zone III, où une loi binomiale serait le choix naturel. Aux plus grands âges, `Dx` dépasse `Ex` (France 2020 : 105 ans pour les deux sexes, taux jusqu'à 2,0) : une binomiale n'y a plus de vraisemblance.
 - **La zone III couvre toujours ω₂ à ω₃**, même si la table s'arrête avant (HMD s'arrête à 109 ans, ω₃ vaut 110 par défaut) : c'est précisément l'extrapolation que cette zone fournit.
-- **Âge compté depuis ω₂ pour Kannisto** : le paramètre `a` est alors la cote de mortalité à ω₂ (de l'ordre de 0,06 à 0,10), dans la grille `[0,001 ; 1]` du cahier des charges.
+- **Âge compté depuis ω₂ pour Kannisto** : le paramètre `a` est alors la cote de mortalité à ω₂ (de l'ordre de 0,06 à 0,10), dans la grille de recherche `[0,001 ; 1]`.
 - **Nelder-Mead pour les modèles à plusieurs exponentielles**, avec départ Makeham ou Kannisto, coordonnées recentrées et redémarrages. Un paramètre dont la valeur optimale est 0 est ramené exactement à 0 lorsque le modèle contraint est aussi bon que le libre (Perks se réduit ainsi à Makeham sur France 2020).
 - **Sexes traités séparément** : configuration, estimation, évaluation, sélection et table de vie sont propres à chaque sexe.
 - **Bords de fenêtre continus** : la pondération tanh est étalée pour valoir exactement 1 et 0 aux bords de la fenêtre. Le constant `CONTINUOUS_EDGES` de `src/joiner.py` rétablit la formule littérale.
@@ -200,8 +197,6 @@ Les téléchargements sont construits au clic : modifier un réglage ailleurs ne
 ## Limites connues
 
 - **Zone I.** Un polynôme de degré 3, ou une spline à un nœud tous les 5 âges, ne suit pas la chute entre 0 et 1 an : sur France 2020, l'âge 1 est surestimé de 4 à 6 fois et les âges 2 et 3 de 1,3 à 2 fois, la forme générale (chute, minimum vers 6-8 ans, remontée) restant correcte.
-- **Coale-Kisker.** La cible conventionnelle `q(ω₃) = 0,6` est très inférieure à ce que montrent les données de France 2020 (`q` observé déjà de 0,63 à 0,86 à 109 ans) : la méthode s'ajuste très mal à ces tables. L'argument `q_target` de `fit_coale_kisker` permet de l'explorer.
-- **Coale-Kisker, ancrage.** La courbe s'appuie sur le taux brut d'un seul âge (ω₂) : bruité pour une petite population.
 - **Tests du χ².** Avec des expositions nationales, les p-values sont proches de 0 pour toutes les lois paramétriques : lisez-les avec l'AIC, les résidus et le runs test.
 - **Données par âge simple uniquement** (pas de tranches d'âge).
 
@@ -227,12 +222,12 @@ mortality-table-smoother/
 │   ├── zone2_makeham.py      # Makeham
 │   ├── zone2_makeham2.py     # Makeham 2ᵉ ordre
 │   ├── zone2_perks.py        # Perks
-│   ├── zone3.py              # Kannisto, Beard, Coale-Kisker
+│   ├── zone3.py              # Kannisto, Beard
 │   ├── spline_all.py         # Spline naturelle sur tous les âges (méthode globale)
 │   ├── joiner.py             # Raccord tanh, conversion μ → q, table de vie
 │   ├── evaluator.py          # Critères et suggestion de sélection
 │   └── exporter.py           # Excel, CSV, texte HMD, graphique
-├── tests/                    # Suite pytest (données synthétiques et réelles)
+├── tests/synthetic.py        # Générateur des fichiers synthétiques de sample_data/
 ├── notebooks/
 │   └── 01_loader_demo.ipynb  # Démonstration du chargement
 ├── sample_data/              # Un fichier d'exemple par disposition acceptée
@@ -254,15 +249,9 @@ courbe à partir de ses paramètres pour le raccord et les évaluations.
 
 ## Tests
 
-```bash
-pip install -r requirements-dev.txt
-python -m pytest tests
-```
-
-Plus de 850 tests : formules comparées à des oracles indépendants (SciPy, énumération exhaustive, boucles naïves), récupération
-exacte de lois connues à partir de comptages sans bruit, propriétés d'optimalité (équations de score, optimum global par évolution
-différentielle), parcours de l'application avec `streamlit.testing`, et chaîne complète sur la France 2020 de la HMD.
-Les tests sur fichiers HMD réels sont ignorés si les fichiers sont absents (dossier indiqué par la variable d'environnement `MORTALITY_POST3_DIR`).
+La suite de tests (plus de 800 tests : formules comparées à des oracles indépendants, récupération exacte de lois connues à partir de comptages sans bruit,
+propriétés d'optimalité, parcours de l'application avec `streamlit.testing`, chaîne complète sur l'extrait France 2020 de la HMD) n'est pas publiée dans ce dépôt.
+Seul `tests/synthetic.py`, le générateur des données synthétiques, y figure ; le notebook de chargement s'en sert.
 
 ---
 
@@ -270,18 +259,28 @@ Les tests sur fichiers HMD réels sont ignorés si les fichiers sont absents (do
 
 `numpy` · `scipy` · `pandas` · `openpyxl` · `streamlit` · `matplotlib` · `plotly` (listés dans `requirements.txt`, avec pour bornes basses les versions testées)
 
-Testé avec Python 3.11, NumPy 2.4, SciPy 1.16, pandas 2.3, Streamlit 1.61, Plotly 6.5, Matplotlib 3.10, openpyxl 3.1.
+Testé avec Python 3.11 sur une installation neuve depuis `requirements.txt` (18 novembre 2026) : NumPy 2.4.6, SciPy 1.17.1, pandas 3.1.1, Streamlit 1.67.0, Plotly 7.1.0, Matplotlib 3.11.2, openpyxl 3.1.5. Également vérifié avec NumPy 1.26.4, pandas 2.3.3, Streamlit 1.61.1, Plotly 6.5.2.
 
 SciPy fournit des briques numériques (Nelder-Mead, `CubicSpline`, fonctions spéciales, lois du χ² et normale pour les tests), jamais un modèle
 actuariel. Le graphique des classeurs Excel est dessiné avec Matplotlib : l'export d'image Plotly demande `kaleido`, hors des dépendances retenues.
 
 ---
 
-## Données et citation
+## Données
 
-Les données de mortalité proviennent de la [Human Mortality Database](https://www.mortality.org) (accès gratuit sur inscription).
-Le fichier `sample_data/FRA_taux_bruts_moment_2020_female_male.csv` en est dérivé : respectez les conditions d'utilisation de la HMD
-et citez-la (*Human Mortality Database. University of California, Berkeley, and Max Planck Institute for Demographic Research, Germany. www.mortality.org*).
+**Source.** Les taux de mortalité et les expositions viennent de la [Human Mortality Database](https://www.mortality.org) (HMD), en accès gratuit sur inscription.
+
+**Dans le dépôt.**
+
+- `sample_data/FRA_taux_bruts_moment_2020_female_male.csv` : extrait **réel** de la HMD, France (population totale), période 2020, âges 0 à 109, femmes et hommes. Il est construit à partir des tables `Mx_1x1` (taux) et `Exposures_1x1` (expositions), version « Last modified : 12 Aug 2026 » (protocole de méthodes v6) ; les décès sont reconstruits par `Dx = mx × Ex`. C'est le fichier du « premier essai », des ajustements de la page Méthodologie et de la courbe de l'accueil.
+- Les autres fichiers de `sample_data/` (`synthetic_*`) sont **synthétiques** : produits par `tests/synthetic.py`, ils ne contiennent aucune donnée réelle.
+- Les fichiers bruts de la HMD ne sont pas dans le dépôt. Pour d'autres pays ou d'autres années, il faut les télécharger sur mortality.org : la HMD préfère que l'on renvoie vers son site plutôt que de recopier ses fichiers, et l'extrait ci-dessus n'est là que pour la démonstration.
+
+**Obtenir d'autres données HMD.** Inscription gratuite sur mortality.org (« Registration », « New User »), puis la page du pays (France, population totale : `FRATNP`), section « Complete Data Series » : fichiers 1x1 `Deaths_1x1.txt` et `Exposures_1x1.txt` (ou `Mx_1x1.txt`), à déposer avec la disposition A. Noter la date de téléchargement.
+
+**Licence et citation.** Le code est sous licence MIT ; les données de la HMD ne le sont pas. Les données construites par l'équipe de la HMD (taux, expositions) sont publiées sous licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ; les données d'entrée de chaque pays restent soumises à la licence de leur fournisseur (voir le [contrat d'utilisation de la HMD](https://www.mortality.org/Data/UserAgreement)). La HMD demande de la citer ainsi :
+
+> HMD. Human Mortality Database. Max Planck Institute for Demographic Research (Germany), University of California, Berkeley (USA), and French Institute for Demographic Studies (France). Available at www.mortality.org.
 
 ---
 
@@ -292,12 +291,8 @@ et citez-la (*Human Mortality Database. University of California, Berkeley, and 
 - Perks, W. (1932). On some experiments in the graduation of mortality statistics. *J. Inst. Actuaries*, 63.
 - Beard, R.E. (1959). Note on some mathematical mortality models. *CIBA Foundation Colloquia on Ageing*, 5.
 - Kannisto, V. (1994). *Development of oldest-old mortality, 1950-1990.* Odense University Press.
-- Coale, A., Kisker, E. (1990). Defects in data on old-age mortality in the United States. *Asian and Pacific Population Forum*, 4(1).
 - Henderson, R. (1924). A new method of graduation. *Trans. Actuarial Society of America*, 25.
 - Richards, S.J. (2012). A handbook of parametric survival models for actuarial use. *Scandinavian Actuarial Journal*.
-
-Le cahier des charges (`mortality_smoother_specs.docx`) et la note méthodologique (`lissage_mortalite_v1.1.docx`) ont guidé la construction
-module par module ; ajoutez-les dans un dossier `docs/` si vous souhaitez les publier avec le code.
 
 ---
 

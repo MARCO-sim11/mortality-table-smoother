@@ -27,7 +27,7 @@ La spline globale est évaluée **dans chaque zone**, sur les âges de données 
 
 **Combien de paramètres compte l'AIC ?** Pas les 23 : une zone ne doit pas payer pour des nœuds situés dans une autre. `config.zone_view` donne à chaque zone **les nœuds qui tombent dans ses bornes** (bornes comprises : un nœud sur une frontière compte dans les deux zones ; au moins un). Sur la France 2020 avec les bornes par défaut : 5 nœuds en zone I, 14 en zone II, 6 en zone III.
 
-C'est un choix de ce programme, pas du cahier des charges : il rend la comparaison avec les autres méthodes de la zone équitable sans faire payer à une zone des paramètres qui n'y servent pas. Il compte les nœuds de la zone et non ceux qui l'influencent par couplage de la spline.
+C'est un choix de ce programme : il rend la comparaison avec les autres méthodes de la zone équitable sans faire payer à une zone des paramètres qui n'y servent pas. Il compte les nœuds de la zone et non ceux qui l'influencent par couplage de la spline.
 
 ## 4. Dans le raccord
 

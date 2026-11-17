@@ -23,11 +23,11 @@ Le **logit** de $\mu_x$ est une droite de l'âge : $\operatorname{logit}\mu_x = 
 - $b$ est la vitesse de croissance de cette cote (autour de 0,16).
 - Le taux est borné par 1 : plateau à 1 par an.
 
-**L'origine de l'âge.** Le cahier des charges cherche $a \in [0{,}001\,;\,1]$ et $b \in [0{,}05\,;\,0{,}20]$. Avec les âges absolus, le $a$ optimal vaudrait $7\cdot 10^{-8}$ : aucun point de la grille n'en approche. En comptant l'âge depuis $\omega_2$ ($t = x - \omega_2$), $a$ devient la cote à $\omega_2$ et la grille encadre l'optimum. Le $a$ « en âge absolu » de la littérature est $a\,e^{-b\,\omega_2}$ ; `params['x0']` donne l'origine $\omega_2$.
+**L'origine de l'âge.** Une recherche naturelle porte sur $a \in [0{,}001\,;\,1]$ et $b \in [0{,}05\,;\,0{,}20]$. Avec les âges absolus, le $a$ optimal vaudrait $7\cdot 10^{-8}$ : aucun point de la grille n'en approche. En comptant l'âge depuis $\omega_2$ ($t = x - \omega_2$), $a$ devient la cote à $\omega_2$ et la grille encadre l'optimum. Le $a$ « en âge absolu » de la littérature est $a\,e^{-b\,\omega_2}$ ; `params['x0']` donne l'origine $\omega_2$.
 
 ## 2. Vraisemblance de Poisson, pas de Bernoulli
 
-Le cahier des charges écrit une vraisemblance de Bernoulli ($D \sim \text{Binomiale}(E, \mu)$ approchée). Mais $D_x > E_x$ se produit aux âges extrêmes (France 2020 : 105 ans pour les deux sexes, 107 à 109 ans pour les hommes, taux jusqu'à 2,0) : une binomiale y a un nombre négatif de survivants et aucune vraisemblance. On prend donc $D_x \sim \text{Poisson}(E_x\mu_x)$, la vraisemblance de toutes les autres zones (l'AIC reste sur une seule échelle) ; ce sont d'ailleurs des gradients de Poisson, $(D - E\mu)(1-\mu)$, qu'imprime la note méthodologique pour Kannisto.
+Une vraisemblance de Bernoulli ($D \sim \text{Binomiale}(E, \mu)$ approchée) serait le choix naturel. Mais $D_x > E_x$ se produit aux âges extrêmes (France 2020 : 105 ans pour les deux sexes, 107 à 109 ans pour les hommes, taux jusqu'à 2,0) : une binomiale y a un nombre négatif de survivants et aucune vraisemblance. On prend donc $D_x \sim \text{Poisson}(E_x\mu_x)$, la vraisemblance de toutes les autres zones (l'AIC reste sur une seule échelle) ; ce sont d'ailleurs des gradients de Poisson, $(D - E\mu)(1-\mu)$, que l'estimation ci-dessous utilise.
 
 ## 3. L'estimation pas à pas
 

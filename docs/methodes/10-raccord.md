@@ -23,7 +23,7 @@ et la zone de droite pèse $1 - w$. Propriétés : $w = \tfrac12$ en $\omega$ ; 
 
 ### Bords continus (décision signalée)
 
-La formule littérale du cahier des charges est $\tfrac12(1 + \tanh u)$. Mais en $|u| = 2$, elle vaut 0,982 et non 1 : si l'on coupe la fenêtre à cet endroit, on laisse une **marche de 1,8 %** de l'écart entre les deux zones à chaque bord. La version retenue **étale** la tangente dans la fenêtre pour qu'elle atteigne exactement 1 et 0 aux bords (le facteur $1/\tanh 2$) : même fenêtre, même milieu ($w = \tfrac12$), mais continue (avec une rupture de pente de 1,2 % de l'écart par âge pour $\sigma = 3$). La différence ne compte que pour une fenêtre large ($\sigma \ge 5$) : pour $\sigma = 3$, la plus grande irrégularité du poids est la raideur du milieu de la fenêtre, et les deux formules s'y valent. La constante `CONTINUOUS_EDGES` de `src/joiner.py` rétablit la formule littérale.
+La formule littérale de la fenêtre est $\tfrac12(1 + \tanh u)$. Mais en $|u| = 2$, elle vaut 0,982 et non 1 : si l'on coupe la fenêtre à cet endroit, on laisse une **marche de 1,8 %** de l'écart entre les deux zones à chaque bord. La version retenue **étale** la tangente dans la fenêtre pour qu'elle atteigne exactement 1 et 0 aux bords (le facteur $1/\tanh 2$) : même fenêtre, même milieu ($w = \tfrac12$), mais continue (avec une rupture de pente de 1,2 % de l'écart par âge pour $\sigma = 3$). La différence ne compte que pour une fenêtre large ($\sigma \ge 5$) : pour $\sigma = 3$, la plus grande irrégularité du poids est la raideur du milieu de la fenêtre, et les deux formules s'y valent. La constante `CONTINUOUS_EDGES` de `src/joiner.py` rétablit la formule littérale.
 
 Valeurs pour $\sigma = 3$ (poids de la zone de gauche, $\delta = x - \omega$) :
 
@@ -49,7 +49,7 @@ Valeurs pour $\sigma = 3$ (poids de la zone de gauche, $\delta = x - \omega$) :
 
 ## 3. Trois zones, deux fenêtres
 
-Le cahier des charges fond deux courbes à la fois ; pour trois zones, avec $w_1$ la fenêtre de $\omega_1$ et $w_2$ celle de $\omega_2$ :
+La pondération ci-dessus fond deux courbes à la fois ; pour trois zones, avec $w_1$ la fenêtre de $\omega_1$ et $w_2$ celle de $\omega_2$ :
 
 $$\mu(x) \;=\; w_1\,\mu_{\mathrm{I}}(x) \;+\; (1 - w_1)\Big[\,w_2\,\mu_{\mathrm{II}}(x) \;+\; (1 - w_2)\,\mu_{\mathrm{III}}(x)\Big].$$
 
@@ -71,4 +71,4 @@ Une zone n'est ajustée que sur ses âges, mais une fenêtre déborde de part et
 
 ## Références
 
-- Cahier des charges, section 4 (raccord par moyenne pondérée en tangente hyperbolique).
+- Aucune référence externe : le raccord par moyenne pondérée en tangente hyperbolique est entièrement défini dans cette fiche.

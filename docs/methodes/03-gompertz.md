@@ -43,12 +43,12 @@ La hessienne est **définie négative** dès que deux âges distincts ont $E_x\m
 
 ### 2.3 L'algorithme
 
-1. **Départ** : $(\alpha_0, \beta_0)$ = régression MCO de $\ln(D_x/E_x)$ sur $x$, sur les âges avec $D_x > 0$ (non pondérée, comme le prévoit le cahier des charges).
+1. **Départ** : $(\alpha_0, \beta_0)$ = régression MCO de $\ln(D_x/E_x)$ sur $x$, sur les âges avec $D_x > 0$ (non pondérée).
 2. **Itérer** $\theta \leftarrow \theta + (-H)^{-1} g$ avec le gradient $g$ et la hessienne ci-dessus.
 3. **Arrêt** quand l'écart de log-vraisemblance restant, estimé par $\tfrac12\,g^\top(-H)^{-1}g$ (décrémentation de Newton), passe sous `nr_tol`, ou après `nr_maxiter` pas.
 4. **Résultat** : $B = e^{\alpha}$, $c = e^{\beta}$.
 
-Deux décisions que le cahier des charges laisse ouvertes :
+Deux décisions d'implémentation :
 
 - **Règle d'arrêt.** La décrémentation de Newton est l'écart de log-vraisemblance qui reste à gagner, au second ordre. Elle ne dépend pas de l'échelle des âges, à la différence de la norme du gradient (dont la composante en $\beta$ est multipliée par $x$).
 - **Pas réduit de moitié.** Un pas complet qui ferait baisser $\ell$ (ou déborder l'exponentielle) est divisé par deux jusqu'à ne plus la faire baisser. Depuis le départ MCO, cela ne se déclenche presque jamais : c'est un garde-fou.

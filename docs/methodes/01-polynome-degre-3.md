@@ -37,7 +37,7 @@ $$\hat a \;=\; (A^\top W A)^{-1} A^\top W\,y .$$
 
 Le système $4\times 4$ est résolu par `numpy.linalg.solve`, jamais en inversant la matrice, jamais par `numpy.polyfit`.
 
-**Étape 4 : le conditionnement.** Les puissances d'un âge ($x^3$ jusqu'à $10^6$) rendent $A^\top W A$ très mal conditionnée (jusqu'à $10^{18}$ sur 60-109 ans). On centre donc les âges et on les ramène à $[-1, 1]$ : $t = (x - c)/h$ avec $c$ le milieu et $h$ la demi-étendue des âges utilisables. On résout en $t$, puis on **repasse à la base des âges** (le polynôme du cahier des charges) par le développement du binôme :
+**Étape 4 : le conditionnement.** Les puissances d'un âge ($x^3$ jusqu'à $10^6$) rendent $A^\top W A$ très mal conditionnée (jusqu'à $10^{18}$ sur 60-109 ans). On centre donc les âges et on les ramène à $[-1, 1]$ : $t = (x - c)/h$ avec $c$ le milieu et $h$ la demi-étendue des âges utilisables. On résout en $t$, puis on **repasse à la base des âges** (le polynôme en $x$) par le développement du binôme :
 
 $$a_j \;=\; \sum_{k \ge j} b_k \binom{k}{j}\,\frac{(-c)^{k-j}}{h^k},$$
 

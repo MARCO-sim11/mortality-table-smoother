@@ -17,6 +17,8 @@ wanted = st.session_state.view_choice
 kind_col, change_col = st.columns([2, 1], vertical_alignment="center")
 kind_col.markdown(f"Type de table : **{theme.view_phrase(wanted)}**")
 change_col.page_link("views/accueil.py", label="Changer de type", icon=":material/swap_horiz:")
+theme.privacy_notice()
+theme.hmd_howto()
 
 mode = st.segmented_control("Disposition des fichiers", MODES, default=remembered("load_mode", MODE_C),
                             required=True, key="load_mode")

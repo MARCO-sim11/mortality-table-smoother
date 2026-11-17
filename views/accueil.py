@@ -38,3 +38,5 @@ with right, st.container(border=True):
 st.subheader("Quatre étapes")
 theme.steps_strip()
 st.page_link("views/methodologie.py", label="Comprendre chaque méthode : la page Méthodologie", icon=":material/menu_book:")
+st.divider()
+theme.data_credit()
