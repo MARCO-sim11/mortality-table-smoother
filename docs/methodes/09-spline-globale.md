@@ -33,7 +33,7 @@ C'est un choix de ce programme : il rend la comparaison avec les autres méthode
 
 - Choisie dans les **trois** zones, la spline globale est la même courbe aux trois places ; comme les poids du raccord somment à 1 à tout âge, la table finale **est** cette courbe (à $10^{-16}$ près).
 - Choisie dans **une seule** zone, elle est raccordée à la zone voisine par la fenêtre en tangente hyperbolique habituelle.
-- Une valeur de $\mu$ au-delà de la dernière ligne de données (110 ans quand la table s'arrête à 109) est évaluée par la formule de la spline (droite tangente).
+- Une valeur de $\mu$ au-delà de la dernière ligne de données (110 ans quand la table s'arrête à 109) est évaluée par la formule de la spline (droite tangente). Sur $\ln\mu$ c'est une droite : la mortalité croît d'un facteur constant par an, sans plateau. La page Évaluation affiche donc un avertissement quand la spline globale est choisie pour la zone III, avec le $q$ à $\omega_3$ comparé à celui de Kannisto et de Beard.
 
 ## 5. Forces et limites
 

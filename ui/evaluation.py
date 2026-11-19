@@ -117,6 +117,28 @@ def offered_in_zone(results: dict, zone: str) -> list:
     return [k for k in results if C.method_spec(k).zone in (zone, C.ZONE_ALL)]
 
 
+def global_curve_warning(results: dict, pick, cfg: C.SmootherConfig):
+    """The warning for a GLOBAL method (the all-ages spline) picked for zone III, or None.
+
+    A global curve is fitted on the rows of the table up to omega3. Where the table stops before omega3 (the HMD stops at 109,
+    omega3 = 110), the joiner reads the curve past its last row from the formula, and for the spline that formula is the straight
+    line of ln mu beyond the end knot: mu keeps growing by a constant factor a year, with no plateau. The message says so and gives
+    q at omega3 under the pick and under the zone III methods that were estimated, so that the gap is visible on the page.
+    None when the pick is not global, or when the rows reach omega3 (nothing is extrapolated)."""
+    if not pick or C.method_spec(pick).zone != C.ZONE_ALL:
+        return None
+    last = int(np.max(results[pick].ages))
+    if cfg.omega3 <= last:
+        return None
+    at = np.array([float(cfg.omega3)])
+    keys = [pick] + [k for k in results if C.method_spec(k).zone == C.ZONES[-1]]
+    q_at = {k: float(J.mu_to_q(J.zone_values(results[k], at))[0]) for k in keys}
+    values = ", ".join(f"{q_at[k]:.2f} avec {C.method_spec(k).label}".replace(".", ",") for k in keys)
+    return (f"{C.method_spec(pick).label} en zone III : au-delà de {last} ans, dernier âge observé, la courbe est prolongée "
+            f"par une droite sur ln μ, donc la mortalité continue de croître sans plateau. À {cfg.omega3} ans, q vaut {values}. "
+            "Pour la zone III, une méthode à plateau (Kannisto, Beard) est plus adaptée.")
+
+
 def assemble_tables(results: dict, cfgs: dict, picks: dict):
     """Spec 7.3 step 4, per sex: `join_zones` on the three chosen results, then `build_life_table`.
 

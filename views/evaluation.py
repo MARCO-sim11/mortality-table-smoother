@@ -10,7 +10,7 @@ from src import evaluator as EV
 from ui import theme
 from ui.common import SEX_BY_LABEL, SEX_LABEL
 from ui.evaluation import (RESIDUAL_CLIP, assemble_tables, evaluation_display, evaluation_tables, fit_figure,
-                           offered_in_zone, residual_figure)
+                           global_curve_warning, offered_in_zone, residual_figure)
 from ui.state import remember, remembered
 
 fits = st.session_state.fit_results
@@ -79,6 +79,9 @@ else:
                 else:
                     picks3[zone] = None
                     st.warning(f"Aucune méthode estimée pour la {C.ZONE_LABELS[zone]}.", icon=":material/warning:")
+        old_age_warning = global_curve_warning(fits[active3], picks3.get(C.ZONES[-1]), cfg3)
+        if old_age_warning:
+            st.warning(old_age_warning, icon=":material/warning:")
         not_copied = []
         for i, zone in enumerate(C.ZONES, start=1):                  # spec 7.2 selected_z1..3, per sex
             kept = st.session_state[f"selected_z{i}"]
